@@ -52,11 +52,28 @@ Team <- new_data$Team.x
 # Add teams back into dataset as a renamed variable.
 new_data <- cbind(Team, new_data)
 
+# Save Season.x values.
+seasonvalues.x <- as.integer(new_data$Season.x[(1:2787)])
+
+# Save Season.y values.
+seasonvalues.y <- new_data$Season.y[(2788:6155)]
+
+# Combine the season values.
+season_values <- c(seasonvalues.x, seasonvalues.y)
+
 # Remove unnecessary columns.
 new_data <- new_data %>% 
   select(-c("X", "Team.x", "Team.y", "Season.x", "Season.y"))
 
+# Change the Date to be the season values.
+setnames(new_data, "Date", "Season")
+new_data$Season <- season_values
+
+# Order data by Season.
+new_data <- new_data[order(new_data[,2]),]
+
 # Write final cleaned data CSV (pre-null values).
 write.csv(new_data,'fulldataset.csv', row.names = FALSE)
+
 
 
