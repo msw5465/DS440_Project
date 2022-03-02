@@ -18,8 +18,8 @@ library(xgboost)
 data <- fread("fulldataset.csv", head = TRUE)
 
 # Split data into training and testing sets.
-train_data <- data[(1:2000)]
-test_data <- data[(2001:2787)]
+train_data <- data[(1:5000)]
+test_data <- data[(5001:6155)]
 
 # Save train data DL Length values.
 DL.train <- train_data$DL_length

@@ -27,18 +27,21 @@ playerids$Season <- playerids$Date
 # Complete a full join of the player IDs and pitching data, by pitcher name.
 all_data <- full_join(playerids, pitchers, by = "Name")
 
+# Remove noninjured pitchers from the dataset
+noninjured <- all_data[is.na(all_data$DL_length),]
+
 # Filter the data by the season values.
 new_data <- all_data[all_data$Season.x == all_data$Season.y,]
+
+# Add noninjured pitchers back into the dataset.
+new_data <- rbind(new_data, noninjured)
 
 # Remove any rows that have no name ID/NA for name value.
 new_data <- new_data[-which(is.na(new_data$Name)),]
 
-# Make Season a numeric value.
-new_data$Season.x <- as.numeric(new_data$Season.x)
-
 # Limit the dataset to include only data from 2006 and newer.
 # 2006 is when the MLB implemented PitchFX into league statistics.
-new_data <- new_data[new_data$Season.x >= 2006,]
+new_data <- new_data[new_data$Season.y >= 2006,]
 
 # Replace all NA values with 0 to avoid problems in regression/modeling.
 new_data[is.na(new_data)] <- 0
