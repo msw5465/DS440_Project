@@ -18,11 +18,13 @@ library(xgboost)
 data <- fread("fulldataset.csv", head = TRUE)
 
 # Split data into training and testing sets.
-train_data <- data[(1:5000)]
-test_data <- data[(5001:6155)]
+dt = sort(sample(nrow(data), nrow(data)*.7))
+train_data <- data[dt,]
+test_data <- data[-dt,]
 
-# Save train data DL Length values.
+# Save train and test data DL Length values.
 DL.train <- train_data$DL_length
+DL.test <- test_data$DL_length
 
 # Initialize the DL length variable to 0 in the test data.
 test_data$DL_length <- 0
@@ -100,7 +102,18 @@ pred <- predict(XGBfit, newdata = dtest)
 test_data$DL_length <- pred
 test_wPred <- test_data
 
+# Clean Resulting data table for easy read access.
+setnames(test_wPred, "DL_length", "Pred_DL_length")
+test_wPred <- test_wPred[,c("Name", "Season", "Pred_DL_length")]
+test_wPred$Season <- (test_wPred$Season + 1)
+
 # Save the prediction file to the project.
 fwrite(test_wPred,"Test_Predictions.csv")
+
+# Calculate rmse of test predictions from actual values.
+rmse(test_wPred$Pred_DL_length, DL.test)
+
+
+
 
 
