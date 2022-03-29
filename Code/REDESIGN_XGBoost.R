@@ -1,9 +1,10 @@
 # Mitch Wentzel
 # DS440
 
-# XGBoost Code - Baseball Pitcher Injury Analysis
+# REDESIGN - XGBoost Code - Baseball Pitcher Injury Analysis
 
-# Preliminary Model - Regression Based on Age, ERA, WAR, IP, Balls and Strikes
+# Preliminary Model - Regression Based on Age, IP, Pitches, FB_pct, SL_pct, 
+# CT_pct, CB_pct, CH_pct, SF_pct, KN_pct, XX_pct, PO_pct
 
 # Clean R Environment
 rm(list = ls())
@@ -30,7 +31,7 @@ DL.test <- test_data$DL_length
 test_data$DL_length <- 0
 
 # Run dummyVars on train data for DL_length response.
-dummies <- dummyVars(DL_length ~ Age+ERA+WAR+IP+Balls+Strikes,
+dummies <- dummyVars(DL_length ~ Age+IP+ERA+Pitches+FB_pct+SL_pct+CT_pct+CB_pct+CH_pct+SF_pct+KN_pct+XX_pct+PO_pct,
                      data = train_data)
 
 # Run predict on train and test data using the results from dummyVars.
@@ -116,7 +117,11 @@ rmse(test_wPred$Pred_DL_length, DL.test)
 # Compute feature importance matrix.
 importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
-xgb.plot.importance(importance_matrix[1:6,])
+xgb.plot.importance(importance_matrix[1:13,])
+
+
+
+
 
 
 
