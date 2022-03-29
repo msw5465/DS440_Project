@@ -3,8 +3,11 @@
 
 # REDESIGN - XGBoost Code - Baseball Pitcher Injury Analysis
 
-# Preliminary Model - Regression Based on Age, IP, Pitches, FB_pct, SL_pct, 
+# REDESIGN Model - Regression Based on Age, IP, ERA, Pitches, FB_pct, SL_pct, 
 # CT_pct, CB_pct, CH_pct, SF_pct, KN_pct, XX_pct, PO_pct
+
+# Chose to keep ERA in model because of its overwhelming importance in the
+# preliminary model.
 
 # Clean R Environment
 rm(list = ls())
