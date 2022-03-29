@@ -116,7 +116,7 @@ rmse(test_wPred$Pred_DL_length, DL.test)
 # Compute feature importance matrix.
 importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
-xgb.plot.importance(importance_matrix[1:6,])
-
+xgb.plot.importance(importance_matrix[1:6,], xlab = "Importance", 
+                    ylab = "Feature")
 
 
