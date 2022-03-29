@@ -11,3 +11,5 @@ MLB_DL_DataScraper.ipynb - Pre-built Web-Scraper, used to obtain MLB Disabled Li
 data_setup.R - Data Cleaning/Joining
 
 XGBoost_Regression.R - XGBoost Regression code, Produces DL Length Predictions for MLB Pitchers, Includes hyperparameter tuning
+
+REDESIGN_XGBoost.R - Redesign of the XGBoost_Regression.R code, Produces DL length Predictions as well as Feature Importance Analysis
