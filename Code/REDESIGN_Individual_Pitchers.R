@@ -97,9 +97,6 @@ new_data <- new_data[order(new_data[,2]),]
 new_data <- new_data[new_data$Name == "Pitcher Name Here",]
 
 # Write final cleaned data CSV (pre-null values).
-write.csv(new_data,'fulldataset.csv', row.names = FALSE)
-
-# Write final cleaned data CSV (pre-null values).
 write.csv(new_data,'single_pticher_season_data.csv', row.names = FALSE)
 
 # Read in the the data set.
