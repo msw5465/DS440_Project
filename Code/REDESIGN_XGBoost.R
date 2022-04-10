@@ -34,7 +34,7 @@ DL.test <- test_data$DL_length
 test_data$DL_length <- 0
 
 # Run dummyVars on train data for DL_length response.
-dummies <- dummyVars(DL_length ~ Age+IP+ERA+Pitches+FB_pct+SL_pct+CT_pct+CB_pct+CH_pct+SF_pct+KN_pct+XX_pct+PO_pct,
+dummies <- dummyVars(DL_length ~ FB_pct+SL_pct+CT_pct+CB_pct+CH_pct+SF_pct+KN_pct+XX_pct+PO_pct,
                      data = train_data)
 
 # Run predict on train and test data using the results from dummyVars.

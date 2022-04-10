@@ -5,14 +5,14 @@
 
 # REDESIGN - XGBoost Code - Baseball Pitcher Injury Analysis
 
-# REDESIGN Model - Regression Based on Age, IP, ERA, Pitches, FB_pct, SL_pct, 
+# REDESIGN Model - Regression Based on FB_pct, SL_pct, 
 # CT_pct, CB_pct, CH_pct, SF_pct, KN_pct, XX_pct, PO_pct
 
 # This XGBoost model is to be trained and tested on season data from a single
 # pitcher. Then it will predict the DL length for the upcoming season for the 
 # specific pitcher it trained/tested on. Simply change input data for each 
 # iteration, make sure input data set has the following variables all in
-# numeric form: Age, IP, ERA, Pitches, FB_pct, SL_pct, CT_pct, CB_pct, CH_pct, 
+# numeric form: FB_pct, SL_pct, CT_pct, CB_pct, CH_pct, 
 # SF_pct, KN_pct, XX_pct, PO_pct, DL_length.
 
 
@@ -94,7 +94,7 @@ new_data$Season <- season_values
 new_data <- new_data[order(new_data[,2]),]
 
 # ---------- INPUT PITCHER NAME HERE -------------#
-new_data <- new_data[new_data$Name == "Pitcher Name Here",]
+new_data <- new_data[new_data$Name == "Charlie Morton",]
 
 # Write final cleaned data CSV (pre-null values).
 write.csv(new_data,'single_pticher_season_data.csv', row.names = FALSE)
