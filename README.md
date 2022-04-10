@@ -16,3 +16,4 @@ REDESIGN_XGBoost.R - Redesign of the XGBoost_Regression.R code, Produces DL leng
 
 REDESIGN_Individual_Pitchers.R - Redesign of XGBoost_Regression.R code, Produces DL length Predictions based on the statistics of individual pitchers.
 
+Pitching_PCA_Analysis - Runs Scaled PCA and Gaussian Mixture Model (clustering) on season-by-season pitching data and output proportioned chances of pitcher's next DL length being 0, 15 or 60 days long.
