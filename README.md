@@ -6,7 +6,7 @@ All code used for this project is in the "Code" folder.
 
 ### Code Files
 
-MLB_DL_DataScraper.ipynb - Pre-built Web-Scraper, used to obtain MLB Disabled List data from prosportstransactions.com
+MLB_DL_DataScraper.ipynb - Pre-built Web-Scraper, used to obtain MLB Disabled List data from prosportstransactions.com. Pre-Built by GitHub user robotallie
 
 data_setup.R - Data Cleaning/Joining
 
