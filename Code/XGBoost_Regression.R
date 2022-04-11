@@ -17,29 +17,38 @@ library(xgboost)
 # Read in the the data set.
 data <- fread("fulldataset.csv", head = TRUE)
 
-# Split data into training and testing sets.
-dt = sort(sample(nrow(data), nrow(data)*.7))
+# Split data into training and test sets.
+dt = sort(sample(nrow(data), nrow(data)*.75))
 train_data <- data[dt,]
-test_data <- data[-dt,]
+test <- data[-dt,]
 
-# Save train and test data DL Length values.
+# Add a validation set by splitting the test set.
+valid_dt = sort(sample(nrow(test), nrow(test)*.5))
+valid_set <- test[valid_dt,]
+test_data <- test[-valid_dt,]
+
+# Save train, validation and test data DL Length values.
 DL.train <- train_data$DL_length
+DL.valid <- valid_set$DL_length
 DL.test <- test_data$DL_length
 
-# Initialize the DL length variable to 0 in the test data.
+# Initialize the DL length variable to 0 in the validation and test data.
+valid_set$DL_length <- 0
 test_data$DL_length <- 0
 
 # Run dummyVars on train data for DL_length response.
 dummies <- dummyVars(DL_length ~ Age+ERA+WAR+IP+Balls+Strikes,
                      data = train_data)
 
-# Run predict on train and test data using the results from dummyVars.
+# Run predict on train, validation and test data using the results from dummyVars.
 x.train <- predict(dummies, newdata = train_data)
+x.valid <- predict(dummies, newdata = valid_set)
 x.test <- predict(dummies, newdata = test_data)
 
 # Convert predict results from above to xgb.DMatrix.
-# Do this for both train and test data sets.
+# Do this for train, validation and test data sets.
 dtrain <- xgb.DMatrix(x.train, label = DL.train, missing = NA)
+dvalid <- xgb.DMatrix(x.valid, missing = NA)
 dtest <- xgb.DMatrix(x.test, missing = NA)
 
 # Initialize an information table for testing trees.
@@ -76,8 +85,8 @@ new_row <- data.table(t(param))
 new_row$best_tree_n <- best_tree_n
 
 # Calculate the test error from the best_tree_n we found above.
-test_error <- unclass(XGBfit)$evaluation_log[best_tree_n,]$test_rmse_mean
-new_row$test_error <- test_error
+valid_error <- unclass(XGBfit)$evaluation_log[best_tree_n,]$test_rmse_mean
+new_row$valid_error <- valid_error
 
 # Add the parameters and test error from the tree into the tree-info table.
 hyper_perm_tune <- rbind(new_row, hyper_perm_tune)
@@ -94,6 +103,24 @@ XGBfit <- xgb.train(params          = param,
                     data            = dtrain,
                     watchlist       = watchlist,
                     print_every_n   = 1)
+
+# Run predict on the validation data using the full data model.
+pred <- predict(XGBfit, newdata = dvalid)
+
+# Replace the DL length 0 values with the predictions for DL length.
+valid_set$DL_length <- pred
+Valid_wPred <- valid_set
+
+# Clean Resulting data table for easy read access.
+setnames(Valid_wPred, "DL_length", "Pred_DL_length")
+Valid_wPred <- Valid_wPred[,c("Name", "Season", "Pred_DL_length")]
+Valid_wPred$Season <- (Valid_wPred$Season + 1)
+
+# Save the prediction file to the project.
+fwrite(Valid_wPred,"Validation_Predictions.csv")
+
+# Calculate rmse of validation set predictions from actual values.
+rmse(Valid_wPred$Pred_DL_length, DL.valid)
 
 # Run predict on the test data using the full data model.
 pred <- predict(XGBfit, newdata = dtest)
@@ -118,5 +145,11 @@ importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
 xgb.plot.importance(importance_matrix[1:6,], xlab = "Importance", 
                     ylab = "Feature")
+
+
+
+
+
+
 
 

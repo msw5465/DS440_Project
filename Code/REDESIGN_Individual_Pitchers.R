@@ -29,6 +29,7 @@ library(data.table)
 library(caret)
 library(Metrics)
 library(xgboost)
+library(dplyr)
 
 # Read in full dataset of MLB pitching statistics by season.
 pitchers <- read.csv("pitching_by_season(updated).csv", head = TRUE)
@@ -102,28 +103,38 @@ write.csv(new_data,'single_pticher_season_data.csv', row.names = FALSE)
 # Read in the the data set.
 data <- fread("single_pticher_season_data.csv", head = TRUE)
 
-# Specify data into training and testing sets.
-train_data <- data
-test_data <- data
+# Split data into training and test sets.
+dt = sort(sample(nrow(data), nrow(data)*.75))
+train_data <- data[dt,]
+test <- data[-dt,]
 
-# Save train and test data DL Length values.
+# Add a validation set by splitting the test set.
+valid_dt = sort(sample(nrow(test), nrow(test)*.5))
+valid_set <- test[valid_dt,]
+test_data <- test[-valid_dt,]
+
+# Save train, validation and test data DL Length values.
 DL.train <- train_data$DL_length
+DL.valid <- valid_set$DL_length
 DL.test <- test_data$DL_length
 
-# Initialize the DL length variable to 0 in the test data.
+# Initialize the DL length variable to 0 in the validation and test data.
+valid_set$DL_length <- 0
 test_data$DL_length <- 0
 
 # Run dummyVars on train data for DL_length response.
 dummies <- dummyVars(DL_length ~ Age+IP+ERA+Pitches+FB_pct+SL_pct+CT_pct+CB_pct+CH_pct+SF_pct+KN_pct+XX_pct+PO_pct,
                      data = train_data)
 
-# Run predict on train and test data using the results from dummyVars.
+# Run predict on train, validation and test data using the results from dummyVars.
 x.train <- predict(dummies, newdata = train_data)
+x.valid <- predict(dummies, newdata = valid_set)
 x.test <- predict(dummies, newdata = test_data)
 
 # Convert predict results from above to xgb.DMatrix.
-# Do this for both train and test data sets.
+# Do this for train, validation and test data sets.
 dtrain <- xgb.DMatrix(x.train, label = DL.train, missing = NA)
+dvalid <- xgb.DMatrix(x.valid, missing = NA)
 dtest <- xgb.DMatrix(x.test, missing = NA)
 
 # Initialize an information table for testing trees.
@@ -179,6 +190,24 @@ XGBfit <- xgb.train(params          = param,
                     watchlist       = watchlist,
                     print_every_n   = 1)
 
+# Run predict on the validation data using the full data model.
+pred <- predict(XGBfit, newdata = dvalid)
+
+# Replace the DL length 0 values with the predictions for DL length.
+valid_set$DL_length <- pred
+Valid_wPred <- valid_set
+
+# Clean Resulting data table for easy read access.
+setnames(Valid_wPred, "DL_length", "Pred_DL_length")
+Valid_wPred <- Valid_wPred[,c("Name", "Season", "Pred_DL_length")]
+Valid_wPred$Season <- (Valid_wPred$Season + 1)
+
+# Save the prediction file to the project.
+fwrite(Valid_wPred,"Validation_Predictions.csv")
+
+# Calculate rmse of validation set predictions from actual values.
+rmse(Valid_wPred$Pred_DL_length, DL.valid)
+
 # Run predict on the test data using the full data model.
 pred <- predict(XGBfit, newdata = dtest)
 
@@ -200,7 +229,7 @@ rmse(test_wPred$Pred_DL_length, DL.test)
 # Compute feature importance matrix.
 importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
-xgb.plot.importance(importance_matrix[1:10000000,], xlab = "Importance",
+xgb.plot.importance(importance_matrix[1:1000,], xlab = "Importance", 
                     ylab = "Feature")
 
 
