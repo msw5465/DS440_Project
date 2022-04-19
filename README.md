@@ -20,4 +20,6 @@ Pitching_PCA_Analysis - Runs Scaled PCA and Gaussian Mixture Model (clustering) 
 
 Pitcher_FeatureSelection.R - Two different feature selection methods, first calculates based on normalized sum of squares, second calculates based on chi-squared.
 
-Pitcher_DifferenceXGBoost.r - XGBoost Code to include differences from year to year in pitching data. Easily change desired attributes with instructions in top comments of code file.
+Pitcher_DifferenceXGBoost.R - XGBoost Code to include differences from year to year in pitching data. Easily change desired attributes with instructions in top comments of code file.
+
+Pitching_EDA.R - Basic Exploratory Data Analysis to detect pitching injury trends by age range in the MLB.
