@@ -19,3 +19,5 @@ REDESIGN_Individual_Pitchers.R - Redesign of XGBoost_Regression.R code, Produces
 Pitching_PCA_Analysis - Runs Scaled PCA and Gaussian Mixture Model (clustering) on season-by-season pitching data and output proportioned chances of pitcher's next DL length being 0, 15 or 60 days long.
 
 Pitcher_FeatureSelection.R - Two different feature selection methods, first calculates based on normalized sum of squares, second calculates based on chi-squared.
+
+Pitcher_DifferenceXGBoost.r - XGBoost Code to include differences from year to year in pitching data. Easily change desired attributes with instructions in top comments of code file.
