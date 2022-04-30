@@ -23,3 +23,7 @@ Pitcher_FeatureSelection.R - Two different feature selection methods, first calc
 Pitcher_DifferenceXGBoost.R - XGBoost Code to include differences from year to year in pitching data. Easily change desired attributes with instructions in top comments of code file.
 
 Pitching_EDA.R - Basic Exploratory Data Analysis to detect pitching injury trends by age range in the MLB. 
+
+For Further Information Regarding the Project, Please Contact mwentzel1932@gmail.com
+
+Thank you
