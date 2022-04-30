@@ -79,7 +79,7 @@ plot(boruta_output_gen, cex.axis = 0.7, las = 2, xlab = "Pitching Attribute",
 boruta_output_pitch <- Boruta(DL_length ~ ., data = pitch, doTrace = 2)
 
 # Visualize the results.
-plot(boruta_output_pitch, cex.axis = 0.7, las = 2, xlab = "Pitch Type", 
+plot(boruta_output_pitch, cex.axis = 0.5, las = 2, xlab = "Pitch Type", 
      main = "Variable Importance")
 
 

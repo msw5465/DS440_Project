@@ -7,16 +7,19 @@
 rm(list = ls())
 
 # Load in Packages.
+library(data.table)
 library(dplyr)
 
 # Read in full dataset of MLB pitching statistics by season.
-pitchers <- read.csv("pitching_by_season.csv", head = TRUE)
+pitchers <- read.csv("pitching_by_season(updated).csv", head = TRUE)
 
 # Read in full MLB disabled list dataset.
 dldata <- read.csv("MLB-DL-Data(pre-cleaning).csv", head = TRUE)
 
 # Read in full dataset of MLB player IDs.
-playerids <- read.csv("df_injury_sm.csv", head = TRUE)
+playerids1 <- read.csv("df_injury_sm.csv", head = TRUE)
+playerids2 <- read.csv("df_injury_sm(1).csv", head = TRUE)
+playerids <- rbind(playerids1, playerids2)
 
 # Alter the date attribute to only include the season year.
 playerids$Date = substr(playerids$Date,1,nchar(playerids$Date)-4)
@@ -53,10 +56,10 @@ Team <- new_data$Team.x
 new_data <- cbind(Team, new_data)
 
 # Save Season.x values.
-seasonvalues.x <- as.integer(new_data$Season.x[(1:2787)])
+seasonvalues.x <- as.integer(new_data$Season.x[(1:2789)])
 
 # Save Season.y values.
-seasonvalues.y <- new_data$Season.y[(2788:6155)]
+seasonvalues.y <- new_data$Season.y[(2790:8233)]
 
 # Combine the season values.
 season_values <- c(seasonvalues.x, seasonvalues.y)

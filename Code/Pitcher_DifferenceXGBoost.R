@@ -16,11 +16,7 @@ library(Metrics)
 library(xgboost)
 
 # Read in the the data set.
-data <- fread("NEW.csv", head = TRUE)
-
-# Limit data to 2006 - 2016.
-data <- data[data$Season >= 2006,]
-data <- data[data$Season <= 2016,]
+data <- fread("NEW-Diffs-NoDups.csv", head = TRUE)
 
 # Change all NA values to 0.
 data[is.na(data)] <- 0
@@ -47,7 +43,7 @@ test_data$DL_length <- 0
 # ------------------- CHANGE ATTRIBUTES HERE ------------------ #
 
 # Run dummyVars on train data for DL_length response.
-dummies <- dummyVars(DL_length ~ ERA+ERA_diff+IP+IP_diff+Balls+Balls_diff+Strikes+Strikes_diff,
+dummies <- dummyVars(DL_length ~ FB_pct+SL_pct+CT_pct+CB_pct+CH_pct+SF_pct+FB_pct_diff+SL_pct_diff+CT_pct_diff+CB_pct_diff+CH_pct_diff+SF_pct_diff,
                      data = train_data)
 
 # Run predict on train, validation and test data using the results from dummyVars.
@@ -155,7 +151,7 @@ rmse(test_wPred$Pred_DL_length, DL.test)
 # Compute feature importance matrix.
 importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
-xgb.plot.importance(importance_matrix[1:6,], xlab = "Importance", 
+xgb.plot.importance(importance_matrix[1:12,], xlab = "Importance", 
                     ylab = "Feature")
 
 

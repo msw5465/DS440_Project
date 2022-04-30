@@ -17,6 +17,11 @@ library(xgboost)
 # Read in the the data set.
 data <- fread("fulldataset.csv", head = TRUE)
 
+# Head of specific attributes.
+header <- data[,c("Name", "Season", "DL_length", "Age", "ERA", "WAR", "IP", 
+                  "Balls", "Strikes")]
+head(header)
+
 # Split data into training and test sets.
 dt = sort(sample(nrow(data), nrow(data)*.75))
 train_data <- data[dt,]

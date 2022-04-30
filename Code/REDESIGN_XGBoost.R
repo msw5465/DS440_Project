@@ -3,11 +3,10 @@
 
 # REDESIGN - XGBoost Code - Baseball Pitcher Injury Analysis
 
-# REDESIGN Model - Regression Based on Age, IP, ERA, Pitches, FB_pct, SL_pct, 
+# REDESIGN Model - Regression Based on FB_pct, SL_pct, 
 # CT_pct, CB_pct, CH_pct, SF_pct, KN_pct, XX_pct, PO_pct
 
-# Chose to keep ERA in model because of its overwhelming importance in the
-# preliminary model.
+# Focuses solely on pitch type percentage usage per pitcher.
 
 # Clean R Environment
 rm(list = ls())
@@ -20,6 +19,12 @@ library(xgboost)
 
 # Read in the the data set.
 data <- fread("fulldataset.csv", head = TRUE)
+
+# Head of specific attributes.
+header <- data[,c("Name", "Season", "DL_length", "FB_pct", "SL_pct", 
+                  "CT_pct", "CB_pct", "CH_pct", "SF_pct", "KN_pct", "XX_pct",
+                  "PO_pct")]
+head(header)
 
 # Split data into training and test sets.
 dt = sort(sample(nrow(data), nrow(data)*.75))
@@ -147,7 +152,7 @@ rmse(test_wPred$Pred_DL_length, DL.test)
 # Compute feature importance matrix.
 importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
-xgb.plot.importance(importance_matrix[1:13,], xlab = "Importance", 
+xgb.plot.importance(importance_matrix[1:8,], xlab = "Importance", 
                     ylab = "Feature")
 
 

@@ -5,19 +5,17 @@
 
 # REDESIGN - XGBoost Code - Baseball Pitcher Injury Analysis
 
-# REDESIGN Model - Regression Based on FB_pct, SL_pct, 
-# CT_pct, CB_pct, CH_pct, SF_pct, KN_pct, XX_pct, PO_pct
+# REDESIGN Model - Regression Based on General Pitching Attributes.
 
 # This XGBoost model is to be trained and tested on season data from a single
 # pitcher. Then it will predict the DL length for the upcoming season for the 
 # specific pitcher it trained/tested on. Simply change input data for each 
 # iteration, make sure input data set has the following variables all in
-# numeric form: FB_pct, SL_pct, CT_pct, CB_pct, CH_pct, 
-# SF_pct, KN_pct, XX_pct, PO_pct, DL_length.
+# numeric form.
 
 
 
-#------------ Skip to line 97 to input specific pitcher name -----------------#
+#------------ Skip to line 96 to input specific pitcher name -----------------#
 
 
 
@@ -95,13 +93,18 @@ new_data$Season <- season_values
 new_data <- new_data[order(new_data[,2]),]
 
 # ---------- INPUT PITCHER NAME HERE -------------#
-new_data <- new_data[new_data$Name == "Charlie Morton",]
+new_data <- new_data[new_data$Name == "Mike Timlin",]
 
 # Write final cleaned data CSV (pre-null values).
 write.csv(new_data,'single_pticher_season_data.csv', row.names = FALSE)
 
 # Read in the the data set.
 data <- fread("single_pticher_season_data.csv", head = TRUE)
+
+# Head of specific attributes.
+header <- data[,c("Name", "Season", "DL_length", "Age", "ERA", "WAR", "IP", 
+                  "Balls", "Strikes")]
+head(header)
 
 # Split data into training and test sets.
 dt = sort(sample(nrow(data), nrow(data)*.75))
@@ -123,7 +126,7 @@ valid_set$DL_length <- 0
 test_data$DL_length <- 0
 
 # Run dummyVars on train data for DL_length response.
-dummies <- dummyVars(DL_length ~ Age+IP+ERA+Pitches+FB_pct+SL_pct+CT_pct+CB_pct+CH_pct+SF_pct+KN_pct+XX_pct+PO_pct,
+dummies <- dummyVars(DL_length ~ Age+ERA+WAR+IP+Balls+Strikes,
                      data = train_data)
 
 # Run predict on train, validation and test data using the results from dummyVars.
@@ -229,7 +232,7 @@ rmse(test_wPred$Pred_DL_length, DL.test)
 # Compute feature importance matrix.
 importance_matrix = xgb.importance(colnames(dtrain), model = XGBfit)
 importance_matrix
-xgb.plot.importance(importance_matrix[1:1000,], xlab = "Importance", 
+xgb.plot.importance(importance_matrix[1:9,], xlab = "Importance", 
                     ylab = "Feature")
 
 

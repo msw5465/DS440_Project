@@ -83,5 +83,9 @@ setnames(tmp, "V3", "60-Day DL")
 tmp <- tmp[,c('Name', '0-Day DL', '15-Day DL', '60-Day DL', 'Age', 'ERA', 'WAR', 'IP', 'Strikes', 'Balls')]
 
 # Finally, we write the csv that contains the final submission.
-fwrite(tmp, 'Pitching_PCA_Results.csv')
+write.csv(tmp, 'Pitching_PCA_Results.csv')
+
+
+
+
 
